@@ -31,6 +31,12 @@ fi
 echo "[*] Changing ownership of Splunk Forwarder folders"
 chown -R $SPLUNKUSER:$SPLUNKUSER $INSTALL_LOCATION/splunkforwarder
 
+# Lock down ownershop of this file because it has runas user config
+#  e.g. potential privesc
+chown root:$SPLUNKUSER $INSTALL_LOCATION/splunkforwarder/etc/splunk-launch.conf
+chmod 644 $INSTALL_LOCATION/splunkforwarder/etc/splunk-launch.conf
+
+
 echo "[*] Doing initial run of Splunk install"
 sudo -u $SPLUNKUSER $INSTALL_LOCATION/splunkforwarder/bin/splunk start --accept-license --answer-yes --auto-ports --no-prompt
 
@@ -66,3 +72,4 @@ echo "[*] Restarting Splunk to finalize configuration"
 sudo -u $SPLUNKUSER $INSTALL_LOCATION/splunkforwarder/bin/splunk restart
 
 echo "[!] Please check for errors, as this install script has limited error checking!. Otherwise, work complete."
+
