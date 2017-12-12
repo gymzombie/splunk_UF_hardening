@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTALL_FILE="/home/andy/splunkforwarder-7.0.1-2b5b15c4ee89-Linux-x86_64.tgz"
+INSTALL_FILE="/home/user/splunkforwarder-7.0.1-2b5b15c4ee89-Linux-x86_64.tgz"
 
 DEPLOY_SERVER="servername:8089"
 PASSWORD=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 60)
