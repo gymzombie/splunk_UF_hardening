@@ -17,10 +17,15 @@ fi
 echo "[*] Unpacking Tarball"
 sudo tar -xzf $INSTALL_FILE -C $INSTALL_LOCATION
 
+# todo: Test if location exists. If not, ask if we want to upgrade. 
+
 
 # ensure splunk home is owned by splunk, except for splunk-launch.conf
 echo "[*] Creating splunk user for service account"
 sudo useradd -m -r splunk
+
+# todo: Test if user exists. 
+# todo: Move username to variables
 
 echo "[*] Changing ownership of Splunk Forwarder folders"
 chown -R splunk:splunk $INSTALL_LOCATION/splunkforwarder
