@@ -17,20 +17,18 @@ fi
 echo "[*] Unpacking Tarball"
 sudo tar -xzf $INSTALL_FILE -C $INSTALL_LOCATION
 
-# todo: Test if location exists. If not, ask if we want to upgrade. 
+# create Splunk user account
+if id splunk >/dev/null 2>&1; then
+  echo "Splunk user already exists, no changes"
+else
+  echo "[*] Creating splunk user for service account"
+  sudo useradd -m -r splunk
+fi
 
-
-# ensure splunk home is owned by splunk, except for splunk-launch.conf
-echo "[*] Creating splunk user for service account"
-sudo useradd -m -r splunk
-
-# todo: Test if user exists. 
-# todo: Move username to variables
+# todo: Move "splunk" username to variables
 
 echo "[*] Changing ownership of Splunk Forwarder folders"
 chown -R splunk:splunk $INSTALL_LOCATION/splunkforwarder
-chown root:splunk $INSTALL_LOCATION/splunkforwarder/etc/splunk-launch.conf
-chmod 644 $INSTALL_LOCATION/splunkforwarder/etc/splunk-launch.conf
 
 echo "[*] Doing initial run of Splunk install"
 sudo -u splunk $INSTALL_LOCATION/splunkforwarder/bin/splunk start --accept-license --answer-yes --auto-ports --no-prompt
@@ -47,7 +45,7 @@ disableDefaultPort = true' > $INSTALL_LOCATION/splunkforwarder/etc/apps/UF-TA-ki
 
 # Point to the Deployment server for remote administration
 echo "[*] Configuring Splunk Forwarder for remote administration"
-sudo -u splunk $INSTALL_LOCATION/splunkforwarder/bin/splunk set deploy-poll \"$DEPLOY_SERVER\" --accept-license --answer-yes --auto-ports --no-prompt  -auth admin:changeme
+sudo -u splunk $INSTALL_LOCATION/splunkforwarder/bin/splunk set deploy-poll $DEPLOY_SERVER --accept-license --answer-yes --auto-ports --no-prompt  -auth admin:changeme
 
 # change admin pass
 echo "[*] Changing administrative credentials"
@@ -67,3 +65,4 @@ echo "[*] Restarting Splunk to finalize configuration"
 sudo -u splunk $INSTALL_LOCATION/splunkforwarder/bin/splunk restart
 
 echo "[!] Please check for errors, as this install script has limited error checking!. Otherwise, work complete."
+
